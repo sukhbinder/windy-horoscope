@@ -5,7 +5,11 @@
 [![Tests](https://github.com/sukhbinder/winzy-horoscope/workflows/Test/badge.svg)](https://github.com/sukhbinder/winzy-horoscope/actions?query=workflow%3ATest)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/sukhbinder/winzy-horoscope/blob/main/LICENSE)
 
-Get daily Horoscope using https://horoscope-app-api.vercel.app by Ashutosh Krishna
+Get daily Horoscope using https://horoscope-app-api.vercel.app by [Ashutosh Krishna](https://horoscope-app-api.vercel.app)
+
+
+Exploring astro API for personal project inspired by friend's interest in astrology.
+
 
 ## Installation
 
@@ -21,7 +25,9 @@ winzy install winzy-horoscope
 ```
 ## Usage
 
-Usage instructions go here.
+Demo of usage
+
+![winzy Horoscope Demo](winzy-horoscope-demo.gif)
 
 ## Development
 
