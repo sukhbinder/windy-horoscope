@@ -1,28 +1,72 @@
 import winzy
 import requests
 from colorama import Fore, Style, init
+from functools import lru_cache
+from datetime import datetime, timedelta
 
 # Initialize colorama
 init(autoreset=True)
 
+# Cache expiration time
+CACHE_EXPIRATION = timedelta(minutes=60)
 
-def get_daily_horoscope(sign: str, day: str) -> dict:
-    """
-    Get daily horoscope for a zodiac sign.
+# Dictionary to track cache timestamps
+cache_timestamps = {}
 
-    Keyword arguments:
-    sign:str - Zodiac sign
-    day:str - Date in format (YYYY-MM-DD) OR TODAY OR TOMORROW OR YESTERDAY
-    Return:dict - JSON data
+
+@lru_cache(maxsize=32)
+def get_daily_horoscope_cached(sign: str, day: str) -> dict:
     """
+    Cached version of the get_daily_horoscope function.
+    """
+    # Store the timestamp of the cache entry
+    cache_timestamps[(sign, day)] = datetime.now()
+
+    # Fetch the horoscope
     url = "https://horoscope-app-api.vercel.app/api/v1/get-horoscope/daily"
     params = {"sign": sign, "day": day}
     response = requests.get(url, params)
-    
+
     if response.status_code == 200:
         return response.json()
     else:
         return {"status": "error", "message": "Failed to fetch data"}
+
+
+def get_daily_horoscope(sign: str, day: str) -> dict:
+    """
+    Wrapper to handle LRU cache expiration.
+    """
+    cache_key = (sign, day)
+
+    # Check if the cache has expired
+    if cache_key in cache_timestamps:
+        cached_time = cache_timestamps[cache_key]
+        if datetime.now() - cached_time > CACHE_EXPIRATION:
+            # Clear expired entry
+            get_daily_horoscope_cached.cache_clear()
+            cache_timestamps.pop(cache_key, None)
+
+    # Call the cached function
+    return get_daily_horoscope_cached(sign, day)
+
+# def get_daily_horoscope(sign: str, day: str) -> dict:
+#     """
+#     Get daily horoscope for a zodiac sign.
+
+#     Keyword arguments:
+#     sign:str - Zodiac sign
+#     day:str - Date in format (YYYY-MM-DD) OR TODAY OR TOMORROW OR YESTERDAY
+#     Return:dict - JSON data
+#     """
+#     url = "https://horoscope-app-api.vercel.app/api/v1/get-horoscope/daily"
+#     params = {"sign": sign, "day": day}
+#     response = requests.get(url, params)
+    
+#     if response.status_code == 200:
+#         return response.json()
+#     else:
+#         return {"status": "error", "message": "Failed to fetch data"}
 
 
 def display_horoscope(data: dict):
@@ -66,7 +110,7 @@ class WinzyPlugin:
     @winzy.hookimpl
     def register_commands(self, subparser):
         parser = create_parser(subparser)
-        parser.set_defaults(func=self.hello)
+        parser.set_defaults(func=self.run)
 
     def run(self, args):
         sign = args.sign
