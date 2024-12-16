@@ -27,7 +27,7 @@ winzy install winzy-horoscope
 
 Demo of usage
 
-![winzy Horoscope Demo](winzy-horoscope-demo.gif)
+![winzy-horoscope-demo.gif](https://raw.githubusercontent.com/sukhbinder/windy-horoscope/main/winzy-horoscope-demo.gif)
 
 ## Development
 
