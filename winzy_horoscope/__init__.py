@@ -50,24 +50,6 @@ def get_daily_horoscope(sign: str, day: str) -> dict:
     # Call the cached function
     return get_daily_horoscope_cached(sign, day)
 
-# def get_daily_horoscope(sign: str, day: str) -> dict:
-#     """
-#     Get daily horoscope for a zodiac sign.
-
-#     Keyword arguments:
-#     sign:str - Zodiac sign
-#     day:str - Date in format (YYYY-MM-DD) OR TODAY OR TOMORROW OR YESTERDAY
-#     Return:dict - JSON data
-#     """
-#     url = "https://horoscope-app-api.vercel.app/api/v1/get-horoscope/daily"
-#     params = {"sign": sign, "day": day}
-#     response = requests.get(url, params)
-    
-#     if response.status_code == 200:
-#         return response.json()
-#     else:
-#         return {"status": "error", "message": "Failed to fetch data"}
-
 
 def display_horoscope(data: dict):
     """
@@ -83,10 +65,23 @@ def display_horoscope(data: dict):
 
 def create_parser(subparser):
     valid_signs = [
-        "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
-        "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"
+        "Aries",
+        "Taurus",
+        "Gemini",
+        "Cancer",
+        "Leo",
+        "Virgo",
+        "Libra",
+        "Scorpio",
+        "Sagittarius",
+        "Capricorn",
+        "Aquarius",
+        "Pisces",
     ]
-    parser = subparser.add_parser("horoscope", description="Get daily Horoscope using https://horoscope-app-api.vercel.app by Ashutosh Krishna")
+    parser = subparser.add_parser(
+        "horoscope",
+        description="Get daily Horoscope using https://horoscope-app-api.vercel.app by Ashutosh Krishna",
+    )
     # Add subprser arguments here.
     parser.add_argument(
         "sign",
@@ -105,6 +100,7 @@ def create_parser(subparser):
 
 class WinzyPlugin:
     """ Get daily Horoscope using https://horoscope-app-api.vercel.app by Ashutosh Krishna """
+
     __name__ = "horoscope"
 
     @winzy.hookimpl
@@ -114,16 +110,23 @@ class WinzyPlugin:
 
     def run(self, args):
         sign = args.sign
-        day = args.day.upper() if args.day.upper() in {"TODAY", "TOMORROW", "YESTERDAY"} else args.day
+        day = (
+            args.day.upper()
+            if args.day.upper() in {"TODAY", "TOMORROW", "YESTERDAY"}
+            else args.day
+        )
 
         data = get_daily_horoscope(sign, day)
         if data.get("status") == 200:
             display_horoscope(data)
         else:
-            print(f"{Fore.RED}Error fetching data: {data.get('message', 'Unknown error occurred')}")
-    
+            print(
+                f"{Fore.RED}Error fetching data: {data.get('message', 'Unknown error occurred')}"
+            )
+
     def hello(self, args):
         # this routine will be called when "winzy horoscope is called."
         print("Hello! This is an example ``winzy`` plugin.")
+
 
 horoscope_plugin = WinzyPlugin()

@@ -3,14 +3,16 @@ import winzy_horoscope as w
 
 from argparse import Namespace, ArgumentParser
 
+
 def test_create_parser():
     subparser = ArgumentParser().add_subparsers()
     parser = w.create_parser(subparser)
 
     assert parser is not None
 
-    result = parser.parse_args(['--test', 'hello'])
-    assert result.test == "hello"
+    result = parser.parse_args(["Aquarius"])
+    assert result.sign == "Aquarius"
+    assert result.day == "TODAY"
 
 
 def test_plugin(capsys):
